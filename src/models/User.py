@@ -1,18 +1,22 @@
-from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import String
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import Mapped
+from sqlalchemy.orm import mapped_column
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "user_account"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(30))
+    email: Mapped[str] = mapped_column(String(30))
+    password: Mapped[str] = mapped_column(String(30))
 
-    id = Column(Integer, primary_key=True)
-    username = Column(String, unique=True, nullable=False)
-
-# Replace 'your_database_url' with the actual database URL
-engine = create_engine('postgresql://postgres:postgres@db:5432/python_database')
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-session = Session()
+    def __init__(self, name, email, password):
+        self.name = name
+        self.email = email
+        self.password = password
+    def __repr__(self) -> str:
+        return f"User(id={self.id!r}, name={self.name!r}, email={self.email!r})"
